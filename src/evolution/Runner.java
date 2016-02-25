@@ -10,6 +10,7 @@ public class Runner {
 
     public static void run() {
         Dns currentDns = new Dns(generateStartCharWithLength(Settings.TARGET.length));
+        PrintHelper.printStartWith(currentDns);
         List<Integer> results = new ArrayList<>();
         while ( currentDns.fitness() != 0 ) {
             Dns evolvedDns = evolveFrom(currentDns);
@@ -22,13 +23,13 @@ public class Runner {
             }
             evolutionsDone++;
         }
-        PrintHelper.printResults(results, evolutionsDone, currentDns);
+        PrintHelper.printResults(results, evolutionsDone);
     }
 
     private static char[] generateStartCharWithLength(int length) {
         String start = "";
         for ( int i = 0; i < length; i++ ) {
-            start += " ";
+            start += (char) random.nextInt(128);
         }
         return start.toCharArray();
     }
