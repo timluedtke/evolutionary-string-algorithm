@@ -29,4 +29,8 @@ public class PrintHelper {
         System.out.println("Eingabewort: '" + targetWord + "'");
         System.out.println("Starte mit DNS '" + new String(currentDns.getWord()) + "' (Fitness " + currentDns.fitness() + ")");
     }
+
+    public static void printErgebniswort(Dns currentDns) {
+        System.out.println("Lösung: '" + new String(currentDns.getWord()) + "'");
+    }
 }

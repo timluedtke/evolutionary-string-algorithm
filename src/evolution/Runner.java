@@ -1,5 +1,6 @@
 package evolution;
 
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -10,6 +11,8 @@ public class Runner {
     private static Settings settings;
 
     public static void run(String targetWord) {
+        targetWord = replaceAllNonAsciiCharacters(targetWord);
+
         settings = new Settings(targetWord);
         Dns currentDns = new Dns(generateStartCharWithLength(settings.target.length), settings);
         PrintHelper.printStartWith(targetWord, currentDns);
@@ -26,6 +29,13 @@ public class Runner {
             evolutionsDone++;
         }
         PrintHelper.printResults(results, evolutionsDone);
+        PrintHelper.printErgebniswort(currentDns);
+    }
+
+    private static String replaceAllNonAsciiCharacters(String targetWord) {
+        targetWord = Normalizer.normalize(targetWord, Normalizer.Form.NFD);
+        targetWord = targetWord.replaceAll("[^\\x00-\\x7F]", "");
+        return targetWord;
     }
 
     private static char[] generateStartCharWithLength(int length) {
