@@ -2,22 +2,29 @@ package evolution;
 
 public class Dns {
     private char[] word;
-    private int iterations;
+    private int    iterations;
+    private int    fitnessValue;
 
     public Dns(char[] word) {
         this.word = word;
+        updateFitnessValue(word);
     }
 
-    public int fitness(char[] target) {
+    private void updateFitnessValue(char[] word) {
         int fitnessValue = 0;
         for ( int i = 0; i < word.length; i++ ) {
-            fitnessValue += ((int) target[i] - (int) word[i]) * ((int) target[i] - (int) word[i]);
+            fitnessValue += Math.pow((int) Settings.TARGET[i] - (int) word[i], 2);
         }
-        return fitnessValue;
+        this.fitnessValue = fitnessValue;
     }
 
-    public char[] startWith() {
+    public char[] getWord() {
         return word;
+    }
+
+    public void setWord(char[] word) {
+        updateFitnessValue(word);
+        this.word = word;
     }
 
     public int getIterations() {
@@ -28,11 +35,7 @@ public class Dns {
         this.iterations = iterations;
     }
 
-    public char[] getWord() {
-        return word;
-    }
-
-    public void setWord(char[] word) {
-        this.word = word;
+    public int fitness() {
+        return fitnessValue;
     }
 }
