@@ -6,40 +6,42 @@ import java.util.List;
 import java.util.Random;
 
 public class Main {
-    private static Random        random        = new Random();
+    private static Random       random                  = new Random();
 
-    private final static char[]  target        = "Hello World!".toCharArray();
-    private final static char[]  source        = "aaaaaaaaaaaa".toCharArray();
-    private static int           interationsToMake;
-    private static int           evolutionsToMake;
+    private final static char[] target                  = "Hello World!".toCharArray();
+    private final static char[] source                  = "aaaaaaaaaaaa".toCharArray();
+    private final static int    interationsPerEvolution = 500;
+    private static int          evolutionsDone;
 
     public static void main(String[] args) {
-        interationsToMake = 500;
-        evolutionsToMake = 10;
-
         Dns currentDns = new Dns(source);
         List<Integer> results = new ArrayList<>();
-        for ( int i = 0; i < evolutionsToMake; i++ ) {
-            currentDns = evolveFrom(currentDns);
-            results.add(currentDns.getIterations());
+        while ( currentDns.fitness(target) != 0 ) {
+            Dns evolvedDns = evolveFrom(currentDns);
+            if ( (evolvedDns.fitness(target) >= 0) && (evolvedDns.fitness(target) < currentDns.fitness(target)) ) {
+                System.out.println("Evolved in iteration " + evolutionsDone + " from fitness '" + currentDns.fitness(target) + "' to '" + evolvedDns.fitness(target) + "'");
+                currentDns = evolvedDns;
+                results.add(currentDns.getIterations());
+            }
+            evolutionsDone++;
         }
-        PrintHelper.printResults(results, evolutionsToMake, interationsToMake);
+        System.out.println("\n" + evolutionsDone + " iterations Done. Ending with word: " + new String(currentDns.getWord()));
+        PrintHelper.printResults(results, evolutionsDone, interationsPerEvolution);
     }
 
-    private static Dns evolveFrom(Dns dns) {
-        System.out.println("Begin evolution from '" + new String(dns.start()) + "' with " + interationsToMake + "x" + evolutionsToMake + " iterations");
-        char[] statusQuo = copyCharArray(dns.start());
+    private static Dns evolveFrom(Dns juniorDns) {
+        char[] statusQuo = copyCharArray(juniorDns.start());
         int iteration;
-        int fitness;
-        for ( iteration = 1; iteration < interationsToMake + 1; iteration++ ) {
-            statusQuo = mutate(statusQuo);
-            fitness = calcFitness(statusQuo);
+        Dns seniorDns = new Dns(statusQuo);
+        for ( iteration = 1; iteration < interationsPerEvolution + 1; iteration++ ) {
+            seniorDns.setWord(mutate(seniorDns.getWord()));
+            int fitness = seniorDns.fitness(target);
             if ( fitness == 0 ) {
                 PrintHelper.printSuccessStatus(statusQuo, iteration, fitness);
-                return new Dns(statusQuo, iteration);
+                break;
             }
         }
-        return new Dns(statusQuo, iteration);
+        return seniorDns;
     }
 
     private static char[] copyCharArray(char[] source) {
@@ -64,13 +66,5 @@ public class Main {
 
     private static int randomPositionOf(int length) {
         return random.nextInt(length);
-    }
-
-    private static int calcFitness(char[] statusQuo) {
-        int fitnessValue = 0;
-        for ( int i = 0; i < statusQuo.length; i++ ) {
-            fitnessValue += ((int) target[i] - (int) statusQuo[i]) * ((int) target[i] - (int) statusQuo[i]);
-        }
-        return fitnessValue;
     }
 }

@@ -20,4 +20,20 @@ public class Dns {
     public int getIterations() {
         return iterationsDone;
     }
+
+    public int fitness(char[] target) {
+        int fitnessValue = 0;
+        for ( int i = 0; i < word.length; i++ ) {
+            fitnessValue += ((int) target[i] - (int) word[i]) * ((int) target[i] - (int) word[i]);
+        }
+        return fitnessValue;
+    }
+
+    public char[] getWord() {
+        return word;
+    }
+
+    public void setWord(char[] word) {
+        this.word = word;
+    }
 }
