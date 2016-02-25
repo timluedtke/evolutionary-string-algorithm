@@ -19,12 +19,14 @@ public class PrintHelper {
     }
 
     public static void printEvolvedStatus(Dns currentDns, Dns evolvedDns, int evolutionsDone) {
-        System.out.println("Generation " + evolutionsDone + " entwickelte sich von Fitness '" + currentDns.fitness() + "' nach '" + evolvedDns.fitness() + "' -> DNS: '"
-                + new String(evolvedDns.getWord()) + "'");
+        if ( evolutionsDone % 100 == 0 )
+            System.out.println("Generation " + evolutionsDone + " entwickelte sich von Fitness '" + currentDns.fitness() + "' nach '" + evolvedDns.fitness() + "' -> DNS: '"
+                    + new String(evolvedDns.getWord()) + "'");
         System.out.flush();
     }
 
-    public static void printStartWith(Dns currentDns) {
+    public static void printStartWith(String targetWord, Dns currentDns) {
+        System.out.println("Eingabewort: '" + targetWord + "'");
         System.out.println("Starte mit DNS '" + new String(currentDns.getWord()) + "' (Fitness " + currentDns.fitness() + ")");
     }
 }

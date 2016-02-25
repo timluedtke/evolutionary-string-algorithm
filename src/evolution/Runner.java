@@ -5,12 +5,14 @@ import java.util.List;
 import java.util.Random;
 
 public class Runner {
-    private static Random random = new Random();
-    private static int    evolutionsDone;
+    private static Random   random = new Random();
+    private static int      evolutionsDone;
+    private static Settings settings;
 
-    public static void run() {
-        Dns currentDns = new Dns(generateStartCharWithLength(Settings.TARGET.length));
-        PrintHelper.printStartWith(currentDns);
+    public static void run(String targetWord) {
+        settings = new Settings(targetWord);
+        Dns currentDns = new Dns(generateStartCharWithLength(settings.target.length), settings);
+        PrintHelper.printStartWith(targetWord, currentDns);
         List<Integer> results = new ArrayList<>();
         while ( currentDns.fitness() != 0 ) {
             Dns evolvedDns = evolveFrom(currentDns);
@@ -37,8 +39,8 @@ public class Runner {
     private static Dns evolveFrom(Dns juniorDns) {
         char[] statusQuo = copyCharArray(juniorDns.getWord());
         int iteration;
-        Dns seniorDns = new Dns(statusQuo);
-        for ( iteration = 1; iteration < Settings.interationsPerEvolution + 1; iteration++ ) {
+        Dns seniorDns = new Dns(statusQuo, settings);
+        for ( iteration = 1; iteration < settings.interationsPerEvolution + 1; iteration++ ) {
             seniorDns.setWord(mutate(seniorDns.getWord()));
             int fitness = seniorDns.fitness();
             if ( fitness == 0 ) {
