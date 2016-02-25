@@ -1,64 +1,105 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class Main {
-    private static Random random = new Random();
+    private static Random       random = new Random();
 
-    private static char[] target;
-    private static char[] source;
-    private static int    targetHash;
+    private final static char[] target = "z".toCharArray();
+    private final static char[] source = "a".toCharArray();
+    private static int          interationsToMake;
+    private static int          evolutionsToMake;
 
     public static void main(String[] args) {
-        target = "n".toCharArray();
-        source = "n".toCharArray();
+        interationsToMake = 10000;
+        evolutionsToMake = 10000;
 
-        calcTargetHash();
+        System.out.println("Begin evolution from '" + new String(source) + "' with " + interationsToMake + "x" + evolutionsToMake + " iterations, target is: '"
+                + new String(target) + "'");
 
-        char[] statusQuo = source;
-        int iteration = 0;
-        int fitness = 1;
-        while ( fitness != 0 ) {
-            iteration++;
-            mutate(statusQuo);
+        List<Integer> results = new ArrayList<>();
+        for ( int i = 0; i < evolutionsToMake; i++ ) {
+            results.add(runEvolutionOnce());
+        }
+
+        printResults(results);
+    }
+
+    private static void printResults(List<Integer> results) {
+        int noResult = 0;
+        int average = 0;
+        for ( Integer result : results ) {
+            if ( result == -1 ) {
+                noResult++;
+            } else {
+                average += result;
+            }
+        }
+        average = average / (evolutionsToMake - noResult);
+        double percentSuccessfull = 100 - (((double) noResult / (double) evolutionsToMake) * 100);
+        System.out.println("\n\n" + percentSuccessfull + "% waren erfolgreich. Durchschnittliche Anzahl an Versuchen: " + average);
+    }
+
+    private static int runEvolutionOnce() {
+        System.out.println("--------------------------------------------------");
+        char[] statusQuo = copyCharArray(source);
+        int iteration;
+        int fitness;
+        for ( iteration = 1; iteration < interationsToMake + 1; iteration++ ) {
+            statusQuo = mutate(statusQuo);
             fitness = calcFitness(statusQuo);
-            printStatus(statusQuo, iteration, fitness);
+            printStatus(iteration, fitness, statusQuo);
+            if ( fitness == 0 ) {
+                System.out.println("Goal reached in step: " + iteration + " | fitness: " + fitness + " | " + new String(statusQuo));
+                return iteration;
+            }
         }
-        System.out.println("targetHash was: " + targetHash);
+        return -1;
     }
 
-    private static void calcTargetHash() {
-        int hash = 7;
-        for ( char targetChar : target ) {
-            hash = hash * 31 + (int) targetChar;
+    private static char[] copyCharArray(char[] source) {
+        char[] newChars = new char[source.length];
+        for ( int i = 0; i < newChars.length; i++ ) {
+            newChars[i] = source[i];
         }
-        targetHash = hash;
+        return newChars;
     }
 
-    private static void printStatus(char[] statusQuo, int iteration, int fitness) {
-        if ( iteration % 100 == 0 ) {
-            System.out.println("fitness: " + fitness + " | " + iteration + " " + new String(statusQuo));
+    private static void printStatus(int iteration, int fitness, char[] statusQuo) {
+        if ( iteration % (interationsToMake / 10) == 0 ) {
+            System.out.println("step: " + iteration + " | fitness: " + fitness + " | " + new String(statusQuo));
         }
     }
 
-    private static void mutate(char[] statusQuo) {
-        int position = random.nextInt(source.length);
-        int direction = random.nextInt((1 - (-1)) + 1) - 1;
-        int slide = (statusQuo[position] + direction) % 128;
-        statusQuo[position] = (char) slide;
+    private static char[] mutate(char[] mutant) {
+        int position = randomPositionOf(mutant.length);
+        int direction = randomBackOrForward();
+        int slide = (mutant[position] + direction) % 128;
+        mutant[position] = (char) slide;
+        return mutant;
+    }
+
+    private static int randomBackOrForward() {
+        return random.nextInt((1 - (-1)) + 1) - 1;
+    }
+
+    private static int randomPositionOf(int length) {
+        return random.nextInt(length);
     }
 
     private static int calcFitness(char[] statusQuo) {
+        int fitnessValue = 0;
+        for ( int i = 0; i < statusQuo.length; i++ ) {
+            fitnessValue += ((int) target[i] - (int) statusQuo[i]);
+        }
+        return fitnessValue;
+    }
+
+    private static int hashMe(char[] input) {
         int hash = 7;
-        for ( char quoChar : statusQuo ) {
+        for ( char quoChar : input ) {
             hash = hash * 31 + (int) quoChar;
         }
-//        int difference = 0;
-//        for ( int i = 0; i < statusQuo.length; i++ ) {
-//            difference += Math.exp((int) target[i] - (int) statusQuo[i]);
-//        }
-        int difference = targetHash - hash;
-        if ( difference == 0 ) {
-            difference = statusQuo.equals(target) ? 0 : 222;
-        }
-        return difference;
+        return hash;
     }
 }
