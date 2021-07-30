@@ -18,19 +18,19 @@ public class Printer {
         System.out.println(" " + DECIMAL_FORMAT.format(percentSuccessfull) + "% of all generations could develop themselves.");
     }
 
-    public static void printEvolvedStatus(Dns currentDns, Dns evolvedDns, int evolutionsDone) {
+    public static void printEvolvedStatus(Dna currentDns, Dna evolvedDns, int evolutionsDone) {
         if (evolutionsDone % 100 == 0)
             System.out.println("Generation " + evolutionsDone + " developed from fitness value '" + currentDns.fitness() + "' to '" + evolvedDns.fitness() + "' -> DNS: '"
                     + new String(evolvedDns.getWord()) + "'");
         System.out.flush();
     }
 
-    public static void printStartWith(String targetWord, Dns currentDns) {
+    public static void printStartWith(String targetWord, Dna currentDns) {
         System.out.println("Input / Target: '" + targetWord + "'");
         System.out.println("Starting with DNS '" + new String(currentDns.getWord()) + "' (fitness " + currentDns.fitness() + ")");
     }
 
-    public static void printSolutionvalue(Dns currentDns) {
+    public static void printSolutionvalue(Dna currentDns) {
         System.out.println("\nSolution: '" + new String(currentDns.getWord()) + "'");
     }
 }

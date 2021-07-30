@@ -6,24 +6,24 @@ import java.util.List;
 import java.util.Random;
 
 public class EvolutionRunner {
-    private final Random RANDOM_GENERATOR = new Random();
+    private final Random randomGenerator = new Random();
 
     private int evolutionsDone;
     private Settings settings;
 
-    public EvolutionRunner(String targetWord) {
-        this.run(targetWord);
+    public EvolutionRunner(String enteredTargetWord) {
+        this.run(enteredTargetWord);
     }
 
-    private void run(String targetWord) {
-        targetWord = replaceAllNonAsciiCharacters(targetWord);
+    private void run(String enteredTargetWord) {
+        String targetWord = replaceAllNonAsciiCharacters(enteredTargetWord);
 
         settings = new Settings(targetWord);
-        Dns currentDns = new Dns(generateStartCharWithLength(settings.getTarget().length), settings);
+        Dna currentDns = new Dna(generateStartCharWithLength(settings.getTarget().length), settings);
         Printer.printStartWith(targetWord, currentDns);
         List<Integer> results = new ArrayList<>();
         while (currentDns.fitness() != 0) {
-            Dns evolvedDns = evolveFrom(currentDns);
+            Dna evolvedDns = evolveFrom(currentDns);
             if ((evolvedDns.fitness() >= 0) && (evolvedDns.fitness() < currentDns.fitness())) {
                 Printer.printEvolvedStatus(currentDns, evolvedDns, evolutionsDone);
                 currentDns = evolvedDns;
@@ -38,31 +38,30 @@ public class EvolutionRunner {
     }
 
     private String replaceAllNonAsciiCharacters(String targetWord) {
-        targetWord = Normalizer.normalize(targetWord, Normalizer.Form.NFD);
-        targetWord = targetWord.replaceAll("[^\\x00-\\x7F]", "");
-        return targetWord;
+        String processedTargetWord = Normalizer.normalize(targetWord, Normalizer.Form.NFD);
+        return processedTargetWord.replaceAll("[^\\x00-\\x7F]", "");
     }
 
     private char[] generateStartCharWithLength(int length) {
         StringBuilder randomCharacters = new StringBuilder();
         for (int i = 0; i < length; i++) {
-            randomCharacters.append((char) RANDOM_GENERATOR.nextInt(128));
+            randomCharacters.append((char) randomGenerator.nextInt(128));
         }
         return randomCharacters.toString().toCharArray();
     }
 
-    private Dns evolveFrom(Dns juniorDns) {
+    private Dna evolveFrom(Dna juniorDns) {
         char[] statusQuo = copyCharArray(juniorDns.getWord());
-        int iteration;
-        Dns seniorDns = new Dns(statusQuo, settings);
-        for (iteration = 1; iteration < settings.getInterationsPerEvolution() + 1; iteration++) {
+        Dna seniorDns = new Dna(statusQuo, settings);
+        int iterationNumber;
+        for (iterationNumber = 1; iterationNumber < settings.getInterationsPerEvolution() + 1; iterationNumber++) {
             seniorDns.setWord(mutate(seniorDns.getWord()));
             int fitness = seniorDns.fitness();
             if (fitness == 0) {
                 break;
             }
         }
-        seniorDns.setIterations(iteration);
+        seniorDns.setIterations(iterationNumber);
         return seniorDns;
     }
 
@@ -83,10 +82,10 @@ public class EvolutionRunner {
     }
 
     private int randomBackOrForward() {
-        return RANDOM_GENERATOR.nextInt((1 - (-1)) + 1) - 1;
+        return randomGenerator.nextInt((1 - (-1)) + 1) - 1;
     }
 
     private int randomPositionOf(int length) {
-        return RANDOM_GENERATOR.nextInt(length);
+        return randomGenerator.nextInt(length);
     }
 }

@@ -2,14 +2,14 @@ package evolution;
 
 import java.util.Arrays;
 
-public class Dns {
+public class Dna {
     private final Settings settings;
 
     private char[] word;
     private int iterations;
     private int fitnessValue;
 
-    public Dns(char[] word, Settings settings) {
+    public Dna(char[] word, Settings settings) {
         this.word = word;
         this.settings = settings;
         updateFitnessValue(word);
@@ -47,9 +47,9 @@ public class Dns {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Dns)) return false;
+        if (!(o instanceof Dna)) return false;
 
-        Dns dns = (Dns) o;
+        Dna dns = (Dna) o;
 
         if (iterations != dns.iterations) return false;
         if (fitnessValue != dns.fitnessValue) return false;

@@ -1,13 +1,19 @@
-# evolutionary-string-algorithm
+# evolutionary algorithm: string guesser 
 
-guesses a given string by evolutionary try and error
+This evolutionary algorithm was my first step into machine learning. This program guesses a given string by evolutionary try and error.
 
-## example output
+It is designed for automatic self-improvement over time until it finally guesses the given string corretly.
 
-Generation 15800 entwickelte sich von Fitness '125783' nach '125696' -> DNS: '04ese/ HoFef:+w\-n Lu /dchZ wVPt+ j3;%ein 4@:t2gbpc<2_`7.nXwdGd FCd du>alle ME[lichcei3In K9c04:b9O]st,1ZS2zu "C?#n,#_al a'Abes-ek a$6Aieht.'
+### further readings about topic
+* https://www.wikiwand.com/en/Evolutionary_algorithm
+* https://towardsdatascience.com/introduction-to-evolutionary-algorithms-a8594b484ac?gi=5d506f53696b
 
-Generation 46100 entwickelte sich von Fitness '467' nach '460' -> DNS: 'Dieser Mome_t, wenn du nicht weit, wie ein Wort geschqieben wird und du alle Moglichkeiqen ausprobierst, um zu sehen, was am besken aissieht.'
+## example program output
+```
+Generation 28400 developed from fitness value '2914' to '2885' -> DNS: 'This moaent when'kor"dUnt rem\mbee how a plrd im6writsek correcjZy so you just try every%possiblW c]mbination.'
 
+37553 generations where needed to archieve goal.
+13,96% of all generations could develop themselves.
 
-54171 Generationen wurden benötigt.  11,75% Generationen konnten sich weiterentwickeln.
-Lösung: 'Dieser Moment, wenn du nicht weit, wie ein Wort geschrieben wird und du alle Moglichkeiten ausprobierst, um zu sehen, was am besten aussieht.'
+Solution: 'This moment when you dont remember how a word is written correctly so you just try every possible combination.'
+```
